@@ -6,6 +6,8 @@ exports.jobLister = function(str){
     if (jobStr.length > 1) acc.dependentPairs.push(jobStr);
     return acc; 
   }, {jobs: '', dependentPairs: []});
+  
+  if (dependentPairs.some( ([l1, l2]) => l1 === l2) ) return 'Error: sequence contains a job with itself as a dependency.';
 
   return dependentPairs.reduce((jobList, [job, dep]) => {
     const regexp = new RegExp(`[${job}${dep}]`, 'g'); 

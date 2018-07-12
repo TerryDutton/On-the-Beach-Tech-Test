@@ -12,6 +12,7 @@ describe('jobLister', () => {
    `a =>
     b =>
     c =>`;
+    // I placed the string on a separate line to 'input' for neatness and to avoid tabbing issues that can occur with multiline strings.
     expect(jobLister(input)).to.equal('abc');
   });
 
@@ -30,11 +31,19 @@ describe('jobLister', () => {
     e => b
     f => `;
     const output = jobLister(input); 
-  const expectedSeqs = [/f.*c/, /c.*b/, /b.*e/, /a.*d/];
+    const expectedSeqs = [/f.*c/, /c.*b/, /b.*e/, /a.*d/];
     /*We expect f before c, c before b, b before e and a before d, but they might have other letters between them, 
     so simply checking for pairs of letters won't work.*/
     expect(expectedSeqs.every(seq => seq.test(output))).to.be.true;
     expect([...'abcdef'].every(letter => output.includes(letter))).to.be.true;
     expect(output.length).to.equal(6);  
+  });
+
+  it('returns an error when passed a sequence in which a job is dependent upon itself.', () => {
+    const input = 
+   `a =>
+    b =>
+    c => c`;
+    expect(jobLister(input)).to.equal('Error: sequence contains a job with itself as a dependency.');
   });
 });
