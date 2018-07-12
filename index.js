@@ -1,28 +1,17 @@
 exports.jobLister = function(str){
   const arrayOfJobs = str.split('\n').map(job => job.replace(/\W/g, ''));
 
-  let jobs = '';
-  const dependentPairs = []; 
+  return arrayOfJobs.reduce((acc, jobInfo) => {
+    if (acc.includes('Error') || acc.includes(jobInfo) || jobInfo === '') return acc; 
+    if (jobInfo.length === 1) return acc + jobInfo; 
 
-  for (let i = 0; i < arrayOfJobs.length; i++){
-    jobs += arrayOfJobs[i][0] || ''; 
-    if (arrayOfJobs[i].length > 1){
-      if (arrayOfJobs[i][0] === arrayOfJobs[i][1]) return 'Error: sequence contains a job with itself as a dependency.';
-      dependentPairs.push(arrayOfJobs[i]);
+    else {
+      const [job, dependsOn] = [...jobInfo];
+      if (job === dependsOn) return 'Error: sequence contains a job with itself as a dependency.';
+      if ([job, dependsOn].every(letter => !acc.includes(letter))) acc += dependsOn + job;
+      else if (acc.includes(job)) acc = dependsOn + acc; 
+      else acc += job;
+      return acc.indexOf(dependsOn) === acc.lastIndexOf(dependsOn) ? acc : 'Error: sequence contains a circular set of dependencies.';
     }
-  }
-
-  const answer = dependentPairs.reduce((jobList, [job, dep]) => {
-    const regexp = new RegExp(`[${job}${dep}]`, 'g'); 
-    return jobList.replace(regexp, match => {
-      if (match === job) return `${dep}${job}`; 
-      return '';
-    });
-  }, jobs);
-
-  if (dependentPairs.every(([job, dep]) => {
-    const regexp = new RegExp(`${dep}.*${job}`);
-    return regexp.test(answer);
-  })) return answer;
-  else return 'Error: sequence contains a circular set of dependencies.';
+  }, '');
 }
