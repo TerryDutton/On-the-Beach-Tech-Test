@@ -1,13 +1,16 @@
 exports.jobLister = function(str){
   const arrayOfJobs = str.split('\n').map(job => job.replace(/\W/g, ''));
 
-  const {jobs, dependentPairs} = arrayOfJobs.reduce((acc, jobStr) => {
-    acc.jobs += jobStr[0] || '';
-    if (jobStr.length > 1) acc.dependentPairs.push(jobStr);
-    return acc; 
-  }, {jobs: '', dependentPairs: []});
+  let jobs = '';
+  const dependentPairs = []; 
 
-  if (dependentPairs.some( ([l1, l2]) => l1 === l2) ) return 'Error: sequence contains a job with itself as a dependency.';
+  for (let i = 0; i < arrayOfJobs.length; i++){
+    jobs += arrayOfJobs[i][0] || ''; 
+    if (arrayOfJobs[i].length > 1){
+      if (arrayOfJobs[i][0] === arrayOfJobs[i][1]) return 'Error: sequence contains a job with itself as a dependency.';
+      dependentPairs.push(arrayOfJobs[i]);
+    }
+  }
 
   const answer = dependentPairs.reduce((jobList, [job, dep]) => {
     const regexp = new RegExp(`[${job}${dep}]`, 'g'); 
