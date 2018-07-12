@@ -1,3 +1,3 @@
 exports.jobLister = function(str){
-  return str; 
+  return str.replace(/\W/g, '');
 }

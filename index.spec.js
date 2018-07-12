@@ -6,4 +6,12 @@ describe('jobLister', () => {
     const input = ''; 
     expect(jobLister(input)).to.equal(''); 
   });
+
+  it('when passed a list of jobs without dependencies, returns a string containing those jobs.', () => {
+    const input = 
+   `a =>
+    b =>
+    c =>`;
+    expect(jobLister(input)).to.equal('abc');
+  });
 });
