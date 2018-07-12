@@ -46,4 +46,24 @@ describe('jobLister', () => {
     c => c`;
     expect(jobLister(input)).to.equal('Error: sequence contains a job with itself as a dependency.');
   });
+
+  it('returns an error when passed a sequence with a circular set of dependencies.', () => {
+    let input = 
+   `a => 
+    b => c
+    c => f
+    d => a
+    e => 
+    f => b`;
+    expect(jobLister(input)).to.equal('Error: sequence contains a circular set of dependencies.');
+
+    input = 
+    `f => a
+     a => b
+     b => c
+     c => d
+     d => e
+     e => f`;
+     expect(jobLister(input)).to.equal('Error: sequence contains a circular set of dependencies.');
+  });
 });
