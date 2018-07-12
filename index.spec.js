@@ -12,7 +12,7 @@ describe('jobLister', () => {
    `a =>
     b =>
     c =>`;
-    // I placed the string on a separate line to 'input' for neatness and to avoid tabbing issues that can occur with multiline strings.
+    // The string is placed on a separate line to 'input' for neatness and to avoid tabbing issues that can occur with multiline strings.
     expect(jobLister(input)).to.equal('abc');
   });
 
