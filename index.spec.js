@@ -8,23 +8,19 @@ describe('jobLister', () => {
   });
 
   it('when passed a list of jobs without dependencies, returns a string containing those jobs.', () => {
-    const input = 
-   `a =>
+    const input = `a =>
     b =>
     c =>`;
-    // The string is placed on a separate line to 'input' for neatness and to avoid tabbing issues that can occur with multiline strings.
     expect(jobLister(input)).to.equal('abc');
   });
 
   it('when passed a list of jobs with dependencies, returns a string of jobs with dependencies listed after the jobs they depend on.', () => {
-    let input = 
-   `a =>
+    let input = `a =>
     b => c
     c =>`;
-    expect(jobLister(input)).to.equal('acb');
+    expect(jobLister(input)).to.equal('cab');
 
-    input = 
-   `a => 
+    input = `a => 
     b => c
     c => f
     d => a
@@ -40,16 +36,14 @@ describe('jobLister', () => {
   });
 
   it('returns an error when passed a sequence in which a job is dependent upon itself.', () => {
-    const input = 
-   `a =>
+    const input = `a =>
     b =>
     c => c`;
     expect(jobLister(input)).to.equal('Error: sequence contains a job with itself as a dependency.');
   });
 
   it('returns an error when passed a sequence with a circular set of dependencies.', () => {
-    let input = 
-   `a => 
+    let input = `a => 
     b => c
     c => f
     d => a
@@ -57,8 +51,7 @@ describe('jobLister', () => {
     f => b`;
     expect(jobLister(input)).to.equal('Error: sequence contains a circular set of dependencies.');
 
-    input = 
-    `f => a
+    input = `f => a
      a => b
      b => c
      c => d
